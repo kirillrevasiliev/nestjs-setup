@@ -19,4 +19,7 @@ export default registerAs('database', () => ({
   extra: {
     max: 85,
   },
+  cli: {
+    migrationsDir: path.resolve(__dirname, '../**/migration'),
+  },
 }));
