@@ -28,8 +28,8 @@ export class UsersService extends TypeOrmCrudService<UsersEntity> {
     return id;
   }
 
-  async updateUser(userInput: UpdateDto): Promise<UpdateDto> {
-    await this.userRepository.update({ id: userInput.id }, { ...userInput });
-    return await this.getOneUser(userInput.id);
+  async updateUser(userData: UpdateDto): Promise<UpdateDto> {
+    await this.userRepository.update({ id: userData.id }, { ...userData });
+    return await this.getOneUser(userData.id);
   }
 }
