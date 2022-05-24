@@ -1,10 +1,8 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { IsEmail } from 'class-validator';
 
-import { TABLE } from './users.constants';
-
-@Entity(TABLE)
-export class UsersEntity {
+@Entity('users')
+export class User {
   @PrimaryGeneratedColumn()
   readonly id: number;
 
@@ -16,11 +14,11 @@ export class UsersEntity {
 
   @IsEmail()
   @Column({ type: 'varchar', unique: true, nullable: true })
-  email?: string;
+  email: string;
 
   @Column({ type: 'varchar', nullable: true })
-  name?: string;
+  name: string;
 
   @Column({ type: 'varchar', nullable: true })
-  password?: string;
+  password: string;
 }

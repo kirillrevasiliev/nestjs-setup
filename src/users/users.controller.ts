@@ -1,41 +1,44 @@
-import { Controller, Post, Get, Body, Put, Param } from '@nestjs/common';
-import { Crud, CrudController, Override } from '@nestjsx/crud';
+import { Controller } from '@nestjs/common';
+import { Crud, CrudController } from '@nestjsx/crud';
 
 import { Auth } from '@app/auth/decorators/auth.decorator';
 
-import { TABLE } from './users.constants';
 import { UsersService } from './users.service';
-import { UsersEntity } from './users.entity';
+import { User } from './users.entity';
 import { UpdateDto } from './dtos/update.dto';
 
 @Crud({
   model: {
-    type: UsersEntity,
+    type: User,
   },
   dto: {
     update: UpdateDto,
   },
+  routes: {
+    getOneBase: {
+      decorators: [Auth()],
+    },
+    getManyBase: {
+      decorators: [Auth()],
+    },
+    createOneBase: {
+      decorators: [Auth()],
+    },
+    updateOneBase: {
+      decorators: [Auth()],
+    },
+  },
+  query: {
+    exclude: ['password'],
+    sort: [
+      {
+        field: 'id',
+        order: 'ASC',
+      },
+    ],
+  },
 })
-@Controller(TABLE)
-export class UsersController implements CrudController<UsersEntity> {
+@Controller('users')
+export class UsersController implements CrudController<User> {
   constructor(public service: UsersService) {}
-
-  @Auth()
-  @Override()
-  @Get(':id')
-  async get(@Param('id') id): Promise<UsersEntity> {
-    return this.service.getOneUser(id);
-  }
-
-  @Auth()
-  @Post('create')
-  async create(@Body() userData: UpdateDto): Promise<UsersEntity> {
-    return Promise.resolve(userData);
-  }
-
-  @Auth()
-  @Put('update')
-  async update(@Body() userData: UpdateDto): Promise<UsersEntity> {
-    return this.service.updateUser(userData);
-  }
 }
