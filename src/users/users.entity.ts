@@ -1,5 +1,5 @@
 import { BeforeInsert, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { IsEmail, IsArray, IsOptional, IsString, IsNotEmpty, MinLength } from 'class-validator';
+import { IsEmail, IsArray, IsOptional, IsNotEmpty, MinLength, IsEnum } from 'class-validator';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
 
@@ -38,11 +38,12 @@ export class User {
 
   @IsArray()
   @IsOptional()
-  @IsString({ each: true })
-  @Column({ type: 'varchar', array: true, default: [ROLES.MEMBER] })
+  @IsEnum(ROLES)
+  @Column({ type: 'enum', enum: ROLES, array: true, default: [ROLES.MEMBER] })
   roles: ROLES[];
 
   @IsNotEmpty()
-  @Column({ type: 'varchar', nullable: true })
+  @IsEnum(GENDER)
+  @Column({ type: 'enum', enum: GENDER, nullable: true })
   gender: GENDER;
 }
