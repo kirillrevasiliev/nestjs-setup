@@ -1,4 +1,4 @@
-import { Controller, Request, Get } from '@nestjs/common';
+import { Controller, Request, Post } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
 
@@ -6,7 +6,7 @@ import { AuthService } from './auth.service';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Get('auth/login')
+  @Post('auth/login')
   async login(@Request() req) {
     return this.authService.login(req.body);
   }

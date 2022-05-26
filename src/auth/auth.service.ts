@@ -8,13 +8,13 @@ import { User } from '@app/users/users.entity';
 export class AuthService {
   constructor(private usersService: UsersService, private jwtService: JwtService) {}
 
-  validateUser(email: string): Promise<User | null> {
-    return this.usersService.findOne({ email });
+  validateUser(payload: User): Promise<Partial<User> | null> {
+    return this.usersService.findByLogin(payload);
   }
 
   async login(user: any) {
-    const userDB = await this.usersService.findOne({ email: user.email });
-    const payload = { email: user.email, sub: userDB.id };
+    const userDB = await this.usersService.findByLogin(user);
+    const payload = { sub: userDB.id, ...userDB };
     return {
       access_token: this.jwtService.sign(payload),
     };

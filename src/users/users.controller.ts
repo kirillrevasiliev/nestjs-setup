@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Post, UseInterceptors } from '@nestjs/common';
 import { Crud, CrudController } from '@nestjsx/crud';
 
 import { Auth } from '@app/auth/decorators/auth.decorator';
@@ -21,9 +21,6 @@ import { UpdateDto } from './dtos/update.dto';
     getManyBase: {
       decorators: [Auth()],
     },
-    createOneBase: {
-      decorators: [Auth()],
-    },
     updateOneBase: {
       decorators: [Auth()],
     },
@@ -41,4 +38,10 @@ import { UpdateDto } from './dtos/update.dto';
 @Controller('users')
 export class UsersController implements CrudController<User> {
   constructor(public service: UsersService) {}
+
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Post()
+  create(@Body() userData: User) {
+    return this.service.create(userData);
+  }
 }
