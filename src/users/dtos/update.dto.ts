@@ -11,4 +11,8 @@ export class UpdateDto extends PickType(User, ['username', 'gender']) {
   @Exclude()
   @IsEmpty()
   email: string;
+
+  @Exclude()
+  @IsEmpty()
+  isEmailConfirmed: boolean;
 }

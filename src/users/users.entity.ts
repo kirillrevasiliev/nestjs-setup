@@ -46,4 +46,8 @@ export class User {
   @IsEnum(GENDER)
   @Column({ type: 'enum', enum: GENDER, nullable: true })
   gender: GENDER;
+
+  @IsOptional()
+  @Column({ type: 'boolean', default: false })
+  isEmailConfirmed: boolean;
 }

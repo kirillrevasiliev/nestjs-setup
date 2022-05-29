@@ -5,6 +5,8 @@ import { EntityClassOrSchema } from '@nestjs/typeorm/dist/interfaces/entity-clas
 
 import { ConfigService } from '@app/config';
 
+import { TransactionService } from './transaction.service';
+
 const typeOrmFactory = TypeOrmModule.forRootAsync({
   useFactory: (configService: ConfigService) => configService.get('database'),
   inject: [ConfigService],
@@ -13,7 +15,8 @@ const typeOrmFactory = TypeOrmModule.forRootAsync({
 @Global()
 @Module({
   imports: [typeOrmFactory],
-  exports: [typeOrmFactory],
+  exports: [typeOrmFactory, TransactionService],
+  providers: [TransactionService],
 })
 export class DatabaseModule {
   static forFeature(entities?: EntityClassOrSchema[], connection?: Connection | ConnectionOptions | string) {
