@@ -20,4 +20,16 @@ export class EmailService {
       },
     });
   }
+
+  async sendResetPasswordConfirmation(user: User, url: string) {
+    await this.mailerService.sendMail({
+      to: user.email,
+      subject: 'Rest your password',
+      template: 'reset-password',
+      context: {
+        name: user.username,
+        url,
+      },
+    });
+  }
 }

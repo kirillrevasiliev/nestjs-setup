@@ -15,12 +15,22 @@ export class UsersService extends TypeOrmCrudService<User> {
     super(userRepository);
   }
 
-  async findByLogin({ email, password }: User): Promise<Partial<User>> {
-    const user = await this.repo.findOne({ where: { email } });
+  updateUser(user: User) {
+    return this.repo.update(user.id, user);
+  }
+
+  async findByEmail(email: string): Promise<User> {
+    const user = await this.repo.findOne({ email });
 
     if (!user) {
-      throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
+
+    return user;
+  }
+
+  async findByLogin({ email, password }: User): Promise<Partial<User>> {
+    const user = await this.findByEmail(email);
 
     const areEqual = await bcrypt.compare(password, user.password);
 
@@ -32,7 +42,7 @@ export class UsersService extends TypeOrmCrudService<User> {
   }
 
   async create(@Body() userDto: User): Promise<User> {
-    const userInDb = await this.repo.findOne({ where: { email: userDto.email } });
+    const userInDb = await this.findByEmail(userDto.email);
 
     if (userInDb) {
       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);

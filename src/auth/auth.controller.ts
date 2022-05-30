@@ -1,4 +1,4 @@
-import { Controller, Request, Post, UseInterceptors, ClassSerializerInterceptor, Query, Get } from '@nestjs/common';
+import { Controller, Request, Post, UseInterceptors, ClassSerializerInterceptor, Query, Get, Body } from '@nestjs/common';
 
 import { User } from '@app/users/users.entity';
 
@@ -6,6 +6,8 @@ import { AuthService } from './auth.service';
 import { Auth } from './decorators/auth.decorator';
 import { AuthUser } from './decorators/auth.user.decorator';
 import { ConfirmEmailDto } from './dtos/confirm-email';
+import { ResetPasswordDto } from './dtos/reset-password';
+import { ConfirmPasswordDto } from './dtos/confirm-password';
 
 @Controller()
 export class AuthController {
@@ -33,5 +35,15 @@ export class AuthController {
   @Get('auth/resendCode')
   async resendCode(@AuthUser() currentUser: User) {
     return this.authService.sendConfirmEmail(currentUser);
+  }
+
+  @Post('auth/resetPassword')
+  async resetPassword(@Body() body: ResetPasswordDto) {
+    return this.authService.resetPassword(body.email);
+  }
+
+  @Post('auth/confirmPassword')
+  async confirmPassword(@Body() body: ConfirmPasswordDto) {
+    return this.authService.confirmPassword(body.code, body.password);
   }
 }

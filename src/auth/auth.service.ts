@@ -8,6 +8,7 @@ import { EmailService } from '@app/email/email.service';
 import { TransactionService } from '@app/database/transaction.service';
 import { TokensService } from '@app/tokens/tokens.service';
 import { TYPE } from '@app/tokens/tokens.constants';
+import { Token } from '@app/tokens/tokens.entity';
 
 @Injectable()
 export class AuthService {
@@ -56,12 +57,46 @@ export class AuthService {
   }
 
   async sendConfirmEmail(user: User, type: TYPE = TYPE.CONFIRM_EMAIL) {
-    if (user.isEmailConfirmed) {
+    if (!user.isEmailConfirmed) {
       throw new HttpException('This email already verified', HttpStatus.BAD_REQUEST);
     }
     const { code } = await this.tokensService.generate(type, user.id);
     const url = `${this.configService.get<string>('app.frontHost')}/auth/confirm?code=${code}`;
     await this.emailService.sendEmailConfirmation(user, url);
     return user;
+  }
+
+  async resetPassword(email: string) {
+    const userDB = await this.usersService.findByEmail(email);
+
+    const { code } = await this.tokensService.generate(TYPE.CONFIRM_PASSWORD, userDB.id);
+    const url = `${this.configService.get<string>('app.frontHost')}/auth/confirm?code=${code}`;
+
+    await this.emailService.sendResetPasswordConfirmation(userDB, url);
+    return {
+      statusCode: 200,
+      message: 'Check your email address',
+    };
+  }
+
+  async confirmPassword(code: string, password: string) {
+    return this.transactionService.transaction<void>(async ({ queryRunner: { manager } }) => {
+      try {
+        const token = await manager.findOneOrFail(Token, { code });
+
+        const user = await manager.findOneOrFail(User, token.userId);
+
+        await this.tokensService.verify(user.id, code, manager);
+        user.password = password;
+        await this.usersService.updateUser(user);
+      } catch {
+        throw new HttpException('Code already in use', HttpStatus.BAD_REQUEST);
+      }
+
+      return {
+        statusCode: 200,
+        message: 'Now you can login',
+      };
+    });
   }
 }
