@@ -4,11 +4,12 @@ import { ConfigService } from '@nestjs/config';
 
 import { UserService } from '@app/user/user.service';
 import { User } from '@app/user/user.entity';
-import { EmailService } from '@app/email/email.service';
 import { TransactionService } from '@app/database/transaction.service';
 import { TokenService } from '@app/token/token.service';
 import { TYPE } from '@app/token/token.constants';
 import { Token } from '@app/token/token.entity';
+
+import { AuthMailService } from './auth-mail.service';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +17,7 @@ export class AuthService {
     private usersService: UserService,
     private jwtService: JwtService,
     private configService: ConfigService,
-    private emailService: EmailService,
+    private mailService: AuthMailService,
     private transactionService: TransactionService,
     private tokensService: TokenService,
   ) {}
@@ -66,7 +67,7 @@ export class AuthService {
     }
     const { code } = await this.tokensService.generate(type, user.id);
     const url = `${this.configService.get<string>('app.frontHost')}/auth/confirm?code=${code}`;
-    await this.emailService.sendEmailConfirmation(user, url);
+    await this.mailService.sendEmailConfirmation(user, url);
     return user;
   }
 
@@ -76,7 +77,7 @@ export class AuthService {
     const { code } = await this.tokensService.generate(TYPE.CONFIRM_PASSWORD, userDB.id);
     const url = `${this.configService.get<string>('app.frontHost')}/auth/confirm?code=${code}`;
 
-    await this.emailService.sendResetPasswordConfirmation(userDB, url);
+    await this.mailService.sendResetPasswordConfirmation(userDB, url);
     return {
       statusCode: 200,
       message: 'Check your email address',
