@@ -3,9 +3,9 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 
-import { UsersModule } from '@app/users/users.module';
+import { UserModule } from '@app/user/user.module';
 import { EmailModule } from '@app/email/email.module';
-import { TokensModule } from '@app/tokens/tokens.module';
+import { TokenModule } from '@app/token/token.module';
 
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -20,10 +20,10 @@ import { JwtStrategy } from './strategies/jwt.strategy';
       }),
       inject: [ConfigService],
     }),
-    UsersModule,
+    UserModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     EmailModule,
-    TokensModule,
+    TokenModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],

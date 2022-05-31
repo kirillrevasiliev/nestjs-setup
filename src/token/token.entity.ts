@@ -1,11 +1,12 @@
-import { Entity, Column, CreateDateColumn, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, CreateDateColumn, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Unique } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
-import { User } from '@app/users/users.entity';
+import { User } from '@app/user/user.entity';
 
-import { TYPE } from './tokens.constants';
+import { TYPE } from './token.constants';
 
 @Entity('token')
+@Unique('token', ['code', 'type', 'user'])
 export class Token {
   @PrimaryGeneratedColumn()
   readonly id?: number;

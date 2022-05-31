@@ -2,23 +2,23 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 
-import { UsersService } from '@app/users/users.service';
-import { User } from '@app/users/users.entity';
+import { UserService } from '@app/user/user.service';
+import { User } from '@app/user/user.entity';
 import { EmailService } from '@app/email/email.service';
 import { TransactionService } from '@app/database/transaction.service';
-import { TokensService } from '@app/tokens/tokens.service';
-import { TYPE } from '@app/tokens/tokens.constants';
-import { Token } from '@app/tokens/tokens.entity';
+import { TokenService } from '@app/token/token.service';
+import { TYPE } from '@app/token/token.constants';
+import { Token } from '@app/token/token.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
+    private usersService: UserService,
     private jwtService: JwtService,
     private configService: ConfigService,
     private emailService: EmailService,
     private transactionService: TransactionService,
-    private tokensService: TokensService,
+    private tokensService: TokenService,
   ) {}
 
   validateUser(payload: User): Promise<Partial<User> | null> {
@@ -53,11 +53,15 @@ export class AuthService {
 
       user.isEmailConfirmed = true;
       await manager.save(user);
+      return {
+        statusCode: 200,
+        message: 'Email confirmed',
+      };
     });
   }
 
   async sendConfirmEmail(user: User, type: TYPE = TYPE.CONFIRM_EMAIL) {
-    if (!user.isEmailConfirmed) {
+    if (user.isEmailConfirmed) {
       throw new HttpException('This email already verified', HttpStatus.BAD_REQUEST);
     }
     const { code } = await this.tokensService.generate(type, user.id);

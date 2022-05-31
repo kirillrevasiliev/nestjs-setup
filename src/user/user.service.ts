@@ -3,10 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import * as bcrypt from 'bcrypt';
 
-import { User } from './users.entity';
+import { User } from './user.entity';
 
 @Injectable()
-export class UsersService extends TypeOrmCrudService<User> {
+export class UserService extends TypeOrmCrudService<User> {
   get repository() {
     return this.repo;
   }
@@ -42,7 +42,7 @@ export class UsersService extends TypeOrmCrudService<User> {
   }
 
   async create(@Body() userDto: User): Promise<User> {
-    const userInDb = await this.findByEmail(userDto.email);
+    const userInDb = await this.repo.findOne({ email: userDto.email });
 
     if (userInDb) {
       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);

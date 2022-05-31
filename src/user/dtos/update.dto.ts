@@ -1,4 +1,4 @@
-import { User } from '@app/users/users.entity';
+import { User } from '@app/user/user.entity';
 import { Exclude } from 'class-transformer';
 import { IsEmpty } from 'class-validator';
 import { PickType } from '@nestjs/mapped-types';

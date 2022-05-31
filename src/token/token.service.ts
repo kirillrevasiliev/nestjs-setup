@@ -3,10 +3,10 @@ import * as unique from 'uniqid';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Token } from './tokens.entity';
+import { Token } from './token.entity';
 
 @Injectable()
-export class TokensService {
+export class TokenService {
   get repository() {
     return this.repo;
   }

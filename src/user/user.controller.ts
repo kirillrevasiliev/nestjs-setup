@@ -3,8 +3,8 @@ import { Crud, CrudController } from '@nestjsx/crud';
 
 import { Auth } from '@app/auth/decorators/auth.decorator';
 
-import { UsersService } from './users.service';
-import { User } from './users.entity';
+import { UserService } from './user.service';
+import { User } from './user.entity';
 import { UpdateDto } from './dtos/update.dto';
 
 @Crud({
@@ -40,6 +40,6 @@ import { UpdateDto } from './dtos/update.dto';
   },
 })
 @Controller('users')
-export class UsersController implements CrudController<User> {
-  constructor(public service: UsersService) {}
+export class UserController implements CrudController<User> {
+  constructor(public service: UserService) {}
 }

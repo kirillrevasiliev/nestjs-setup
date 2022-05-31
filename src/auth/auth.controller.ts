@@ -1,6 +1,6 @@
-import { Controller, Request, Post, UseInterceptors, ClassSerializerInterceptor, Query, Get, Body } from '@nestjs/common';
+import { Controller, Request, Post, UseInterceptors, ClassSerializerInterceptor, Query, Body } from '@nestjs/common';
 
-import { User } from '@app/users/users.entity';
+import { User } from '@app/user/user.entity';
 
 import { AuthService } from './auth.service';
 import { Auth } from './decorators/auth.decorator';
@@ -32,7 +32,7 @@ export class AuthController {
   }
 
   @Auth()
-  @Get('auth/resendCode')
+  @Post('auth/resendCode')
   async resendCode(@AuthUser() currentUser: User) {
     return this.authService.sendConfirmEmail(currentUser);
   }
