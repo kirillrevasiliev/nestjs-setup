@@ -1,5 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { Crud, CrudController } from '@nestjsx/crud';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 import { Auth } from '@app/auth/decorators/auth.decorator';
 
@@ -39,7 +40,9 @@ import { UpdateDto } from './dtos/update.dto';
     ],
   },
 })
+@ApiBearerAuth()
 @Controller('users')
+@ApiTags('Users')
 export class UserController implements CrudController<User> {
   constructor(public service: UserService) {}
 }
