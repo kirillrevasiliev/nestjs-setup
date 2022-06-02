@@ -4,9 +4,11 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder, SwaggerDocumentOptions, SwaggerCustomOptions } from '@nestjs/swagger';
 
 import { AppModule } from './app/app.module';
+import { TransformInterceptor } from './interceptor/transform.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useGlobalInterceptors(new TransformInterceptor());
 
   const docConfig = new DocumentBuilder().setTitle('Cats example').setVersion('1.0').addBearerAuth().build();
   const docOptions: SwaggerDocumentOptions = {

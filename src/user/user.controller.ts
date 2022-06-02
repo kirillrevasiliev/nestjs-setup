@@ -31,7 +31,6 @@ import { UpdateDto } from './dtos/update.dto';
     },
   },
   query: {
-    exclude: ['password'],
     sort: [
       {
         field: 'id',
