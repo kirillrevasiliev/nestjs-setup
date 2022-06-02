@@ -5,7 +5,7 @@ export function recursivelyStripeField(data) {
     return data.map(recursivelyStripeField);
   }
 
-  if (data !== null && typeof data === 'object') {
+  if (data !== null && typeof data === 'object' && !(data instanceof Date)) {
     return Object.keys(data)
       .filter((key) => !deniedFields.includes(key))
       .reduce(
