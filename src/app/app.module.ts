@@ -9,6 +9,7 @@ import { EmailModule } from '@app/email/email.module';
 import databaseConfig from '@app/database/database.config';
 import authConfig from '@app/auth/auth.config';
 import emailConfig from '@app/email/email.config';
+import { ChatModule } from '@app/chat/chat.module';
 
 import appConfig from './app.config';
 
@@ -21,6 +22,7 @@ import appConfig from './app.config';
     UserModule,
     AuthModule,
     EmailModule,
+    ChatModule,
   ],
 })
 export class AppModule {}
