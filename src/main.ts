@@ -10,7 +10,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalInterceptors(new TransformInterceptor());
 
-  const docConfig = new DocumentBuilder().setTitle('Cats example').setVersion('1.0').addBearerAuth().build();
+  const docConfig = new DocumentBuilder().setTitle('NestJs API doc').setVersion('1.0').addBearerAuth().build();
   const docOptions: SwaggerDocumentOptions = {
     operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
   };

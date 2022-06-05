@@ -1,7 +1,9 @@
-import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { IsEmail, IsArray, IsOptional, IsNotEmpty, MinLength, IsEnum, IsString } from 'class-validator';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
+
+import File from '@app/file/file.entity';
 
 import { ROLES, GENDER } from './user.constants';
 
@@ -51,4 +53,11 @@ export class User {
   @IsOptional()
   @Column({ type: 'boolean', default: false, nullable: false })
   isEmailConfirmed: boolean;
+
+  @JoinColumn()
+  @OneToOne(() => File, {
+    eager: true,
+    nullable: true,
+  })
+  avatar?: File;
 }

@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import * as bcrypt from 'bcrypt';
 
+import { FileService } from '@app/file/file.service';
+
 import { User } from './user.entity';
 
 @Injectable()
@@ -11,11 +13,11 @@ export class UserService extends TypeOrmCrudService<User> {
     return this.repo;
   }
 
-  constructor(@InjectRepository(User) readonly userRepository) {
+  constructor(@InjectRepository(User) readonly userRepository, private readonly filesService: FileService) {
     super(userRepository);
   }
 
-  updateUser(user: User) {
+  updateUser(user: Partial<User>) {
     return this.repo.update(user.id, user);
   }
 
@@ -49,5 +51,15 @@ export class UserService extends TypeOrmCrudService<User> {
     }
 
     return this.repo.save(this.repo.create(userDto));
+  }
+
+  async addAvatar(user: User, imageBuffer: Buffer, filename: string) {
+    if (user.avatar && user.avatar.key) {
+      await this.filesService.deleteFile(user.avatar.key);
+    }
+    const avatar = await this.filesService.uploadFile(imageBuffer, filename);
+    user.avatar = avatar;
+    await this.updateUser({ id: user.id, avatar });
+    return avatar;
   }
 }
